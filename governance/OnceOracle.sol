@@ -1,6 +1,42 @@
-solidity 0.8.0;
-The Once assurance aims to build the protocol with an oracle inherent to its operation, serving as a fundamental piece to ascertain if a person has died and whether the insurance should be activated. For this, we rely on a stakeholder voting system with the Anima token. 
-Basically, after the request to activate an insurance (which can be carried out by any address that has an Once NFT in its possession) 9 assessors(Anima stakers who applied for the oracle) are randomly chosen to decide if the person to whom is pegged the NFT insurance really died. For this, each assessors must (individually and anonymously) research, whether through government APIs made available by the Once team or through other means such as news channels and notaries, if that request is feasible and is not subject to scams and hacks. Each assessors has 72 hours to decide their vote, after these 72 hours, the voting pool must contain 8 votes in favor of the request for the insurance to be released, if one or more assessors abstains from voting, a new round with new advisors will be started.
- 	If the votation is successful (there are 8 or more votes in favor of the claiming), a 48-hour period will be open for anyone to request an appeal and open a new round of voting with new assessors; each new appeal request requires a tax payment that increases exponentially. If 48 hours have passed and no one has opened a further appeal, the insured amount is released to the insurance owner, the advisors who acted as the majority receive a reward payment in Anima based on their total amount staked and bad voters (who were against the final decision) will receive a punishment based on their total staked amount. To prevent order spamming by nfts owners, a timestamp is started every time an order is opened by a certain nft, with the order tax exponentially increasing if the timestamp is not respected. 
-The Once oracle protocol is based on the “skin in the game” concept, in which, for you to be able to vote, you must stake a minimum amount of Anima, putting your own money at risk and discouraging attempts to take negative advantage of the protocol. The guaranteed amount of insurance can never be greater than 50% of the total staked amount pool, adding a large margin so that any attempt to bribe, corrupt the oracle and illicitly obtain insurance is barred by the economic loss that will be incurred, in which you would need to pay 2x more than the insured amount to obtain the reward in an illicitly way. Furthermore, all voting is open to the public (without the advisors being revealed) so you can have massive control over fraudulent votes.
-ClaimingFee = ClaimingFee x 2round - 1
+// SPDX-License-Identifier: MIT
+// Creator: andreitoma8
+pragma solidity ^0.8.4;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "./stakeable.sol";
+import "./OnceToken.sol";
+
+//THIS IS THE TIME TOKEN -> STAKEABLE TOKEN.
+
+contract Oracle is ReentrancyGuard {
+
+    ERC20Stakeable public tokenERC20;
+    OnceToken public tokenERC721;
+    address owner;
+
+    constructor (ERC20Stakeable _token){
+        owner = msg.sender;
+        tokenERC20 = _token;
+    }
+
+    function setTokenERC20(ERC20Stakeable _token) public {
+        require(owner == msg.sender);
+        tokenERC20 = _token;
+    }
+
+    function setTokenERC721(OnceToken _token) public {
+        require(owner == msg.sender);
+        tokenERC721 = _token;
+    }
+
+
+    function setOwner(address _address) public {
+        require(owner == msg.sender);
+        owner = _address;
+    }
+
+    
+
+}
