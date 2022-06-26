@@ -24,7 +24,7 @@ contract ERC20Stakeable is ERC20, ERC20Burnable, ReentrancyGuard {
     }
 
     //Addresses arrays that staked and are available for the Once Oracle:
-    address[] stakersArr;
+    address[] public stakersArr;
 
     //We havent decided how much we are going to set as APR, right?
     // Rewards per hour. A fraction calculated as x/10.000.000 to get the percentage
@@ -69,7 +69,7 @@ contract ERC20Stakeable is ERC20, ERC20Burnable, ReentrancyGuard {
             stakers[msg.sender].timeOfLastUpdate = block.timestamp;
         }
         if (stakers[msg.sender].timeOfFirstDeposit == 0) {
-            stakers[msg.sender].timeOfFirstDeposit
+            stakers[msg.sender].timeOfFirstDeposit = block.timestamp;
         }
         _burn(msg.sender, _amount);
     }
